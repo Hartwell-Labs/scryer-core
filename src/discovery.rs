@@ -738,7 +738,6 @@ pub fn www_audit(dom: &str) -> Value {
 
 // ─────────────────────────────────────────────── tests ───────────────────
 
-
 /// Bulk: rekonesans pocztowy jednej domeny dla recon-db (tylko DNS: MX + SPF + DMARC).
 /// Bez WWW crawl i searcha = zero throttle przy serii.
 pub struct MailRecon {
@@ -754,9 +753,13 @@ pub fn mail_recon(dom: &str) -> MailRecon {
         Record::Txt(ref s) if s.starts_with("v=spf1") => Some(s.clone()),
         _ => None,
     });
-    let dmarc = first_txt(&format!("_dmarc.{dom}"))
-        .filter(|s| s.starts_with("v=DMARC1"));
-    MailRecon { mx, mx_provider: mxp, spf, dmarc }
+    let dmarc = first_txt(&format!("_dmarc.{dom}")).filter(|s| s.starts_with("v=DMARC1"));
+    MailRecon {
+        mx,
+        mx_provider: mxp,
+        spf,
+        dmarc,
+    }
 }
 
 #[cfg(test)]

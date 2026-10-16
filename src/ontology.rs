@@ -216,9 +216,7 @@ impl Ontology {
         conn.busy_timeout(std::time::Duration::from_secs(5))?;
         conn.execute_batch(SCHEMA)?;
         // migracje lekkie (idempotentne): starsze bazy nie maja mx_provider
-        let _ = conn.execute_batch(
-            "ALTER TABLE domena ADD COLUMN mx_provider TEXT DEFAULT '';",
-        );
+        let _ = conn.execute_batch("ALTER TABLE domena ADD COLUMN mx_provider TEXT DEFAULT '';");
         Ok(Self { conn })
     }
 
@@ -650,9 +648,20 @@ impl Ontology {
         let is_freemail = |email: &str| -> bool {
             let dom = email.split('@').nth(1).unwrap_or("").to_lowercase();
             const FREE: [&str; 14] = [
-                "wp.pl", "op.pl", "onet.pl", "interia.pl", "gmail.com", "o2.pl", "vp.pl",
-                "poczta.onet.pl", "poczta.fm", "tlen.pl", "go2.pl", "hotmail.com",
-                "yahoo.com", "neostrada.pl",
+                "wp.pl",
+                "op.pl",
+                "onet.pl",
+                "interia.pl",
+                "gmail.com",
+                "o2.pl",
+                "vp.pl",
+                "poczta.onet.pl",
+                "poczta.fm",
+                "tlen.pl",
+                "go2.pl",
+                "hotmail.com",
+                "yahoo.com",
+                "neostrada.pl",
             ];
             FREE.contains(&dom.as_str())
         };
@@ -672,7 +681,13 @@ impl Ontology {
         let mut warm = 0usize;
         let mut cold = 0usize;
         for (pid, nazwa, sektor, woj) in &rows {
-            let mut s: i64 = match sektor.as_deref().unwrap_or("").trim().to_lowercase().as_str() {
+            let mut s: i64 = match sektor
+                .as_deref()
+                .unwrap_or("")
+                .trim()
+                .to_lowercase()
+                .as_str()
+            {
                 "zdrowie" | "health" | "szpital" | "szpitale" => 10,
                 "woda" | "water" | "zwik" | "wodociagi" | "wodociągi" => 9,
                 "energia" | "energy" | "ot" | "energetyka" => 9,
@@ -681,13 +696,27 @@ impl Ontology {
                 _ => 3,
             };
             let nazwa_l = nazwa.as_deref().unwrap_or("").to_lowercase();
-            if ["klinicz", "uniwersyteck", "wojewódzk", "wojewodzk", "wojskow", "mswia", "onkolog", "instytut"]
-                .iter()
-                .any(|k| nazwa_l.contains(k))
+            if [
+                "klinicz",
+                "uniwersyteck",
+                "wojewódzk",
+                "wojewodzk",
+                "wojskow",
+                "mswia",
+                "onkolog",
+                "instytut",
+            ]
+            .iter()
+            .any(|k| nazwa_l.contains(k))
             {
                 s += 3;
             }
-            if woj.as_deref().unwrap_or("").trim().eq_ignore_ascii_case("zachodniopomorskie") {
+            if woj
+                .as_deref()
+                .unwrap_or("")
+                .trim()
+                .eq_ignore_ascii_case("zachodniopomorskie")
+            {
                 s += 2;
             }
             if has_own_contact(*pid) {
@@ -696,7 +725,13 @@ impl Ontology {
                     s -= 4;
                 }
             }
-            let tier = if s >= 15 { "HOT" } else if s >= 10 { "WARM" } else { "COLD" };
+            let tier = if s >= 15 {
+                "HOT"
+            } else if s >= 10 {
+                "WARM"
+            } else {
+                "COLD"
+            };
             match tier {
                 "HOT" => hot += 1,
                 "WARM" => warm += 1,
@@ -711,7 +746,9 @@ impl Ontology {
         self.log_audyt(
             "cli",
             "score-db",
-            &format!("backfill tier_score: {updated} podmiotow (HOT={hot} WARM={warm} COLD={cold})"),
+            &format!(
+                "backfill tier_score: {updated} podmiotow (HOT={hot} WARM={warm} COLD={cold})"
+            ),
         );
         (updated, hot, warm, cold)
     }
@@ -741,8 +778,14 @@ impl Ontology {
     }
 
     /// Zapis wyniku bulk recon do domeny (+ fingerprint dostawcy MX).
-    pub fn zapisz_recon_mail(&self, domena: &str, mx: bool, mx_provider: &str,
-                             spf: Option<&str>, dmarc: Option<&str>) {
+    pub fn zapisz_recon_mail(
+        &self,
+        domena: &str,
+        mx: bool,
+        mx_provider: &str,
+        spf: Option<&str>,
+        dmarc: Option<&str>,
+    ) {
         self.set_domena_mail(domena, spf, dmarc);
         let _ = self.conn.execute(
             "UPDATE domena SET mx = ?2 WHERE nazwa = ?1",

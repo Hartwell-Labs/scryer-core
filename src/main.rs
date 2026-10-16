@@ -455,12 +455,11 @@ fn cmd_recon_db() {
         .ok()
         .and_then(|v| v.parse().ok())
         .unwrap_or(500);
-    let domeny = o
-        .domeny_do_recon(limit)
-        .expect("lista domen");
+    let domeny = o.domeny_do_recon(limit).expect("lista domen");
     let total = domeny.len();
     println!("recon-db: {total} domen w kolejce (HOT najpierw)");
-    let (mut done, mut mx_ok, mut spf_n, mut dmarc_n, mut fresh) = (0usize, 0usize, 0usize, 0usize, 0usize);
+    let (mut done, mut mx_ok, mut spf_n, mut dmarc_n, mut fresh) =
+        (0usize, 0usize, 0usize, 0usize, 0usize);
     for (dom, _pid, mial_dmarc) in &domeny {
         let r = discovery::mail_recon(dom);
         o.zapisz_recon_mail(
@@ -470,15 +469,29 @@ fn cmd_recon_db() {
             r.spf.as_deref(),
             r.dmarc.as_deref(),
         );
-        if r.mx { mx_ok += 1; }
-        if r.spf.is_some() { spf_n += 1; }
-        if r.dmarc.is_some() { dmarc_n += 1; }
-        if r.dmarc.is_some() && !*mial_dmarc { fresh += 1; }
+        if r.mx {
+            mx_ok += 1;
+        }
+        if r.spf.is_some() {
+            spf_n += 1;
+        }
+        if r.dmarc.is_some() {
+            dmarc_n += 1;
+        }
+        if r.dmarc.is_some() && !*mial_dmarc {
+            fresh += 1;
+        }
         done += 1;
         if done % 25 == 0 {
-            println!("  {done}/{total} ... MX={mx_ok} SPF={spf_n} DMARC={dmarc_n} (nowe DMARC: {fresh})");
+            println!(
+                "  {done}/{total} ... MX={mx_ok} SPF={spf_n} DMARC={dmarc_n} (nowe DMARC: {fresh})"
+            );
         }
     }
     println!("recon-db DONE: {done} domen | MX={mx_ok} SPF={spf_n} DMARC={dmarc_n} | nowe DMARC: {fresh}");
-    o.log_audyt("cli", "recon-db", &format!("{done} domen, MX={mx_ok}, SPF={spf_n}, DMARC={dmarc_n}, nowe DMARC={fresh}"));
+    o.log_audyt(
+        "cli",
+        "recon-db",
+        &format!("{done} domen, MX={mx_ok}, SPF={spf_n}, DMARC={dmarc_n}, nowe DMARC={fresh}"),
+    );
 }
