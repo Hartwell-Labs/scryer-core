@@ -1,0 +1,27 @@
+target/
+# --- sekrety: nigdy do gita, w kazdym projekcie bez wyjatku ---
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.keystore
+id_rsa
+id_ed25519
+credentials.json
+service-account*.json
+secrets.*
+
+# --- smieci ---
+__pycache__/
+*.py[cod]
+.DS_Store
+Thumbs.db
+*.log
+*.swp
+*~
+
+# --- rust ---
+/target/
