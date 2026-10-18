@@ -1,0 +1,39 @@
+Scryer — commercial licence
+============================
+
+Copyright (c) 2026 Hartwell Labs. All rights reserved.
+
+This licence applies to Scryer and grants none of the rights that `LICENSE`
+grants. The two are alternatives: pick one.
+
+## Commercial terms
+
+1. **Grant.** Hartwell Labs grants you a perpetual, worldwide,
+   non-exclusive, non-transferable licence to use, run and modify Scryer
+   internally, and to have your own contractors do so on your behalf, for the
+   duration of your subscription.
+
+2. **No redistribution.** You may not publish, sublicense, sell, or distribute
+   Scryer or any derivative of it, in source or in binary form, including as
+   part of a product or service you offer. A binary you build and run only for
+   yourself is not distribution.
+
+3. **No hosted access.** You may not offer Scryer, or a service whose value
+   comes from Scryer, to third parties over a network.
+
+4. **Ownership.** Scryer and its source code are and remain the property of
+   Hartwell Labs. Nothing in this licence transfers ownership.
+
+5. **Warranty.** Scryer is provided as is. See the AS IS clause in `LICENSE`,
+   which applies here equally.
+
+6. **Termination.** This licence ends if you breach it. On termination you
+   must stop using Scryer and delete every copy.
+
+## Which one applies to you
+
+- You want to read it, learn from it, run it yourself, contribute back, or
+  build on it: use it under **MIT** (`LICENSE`). No conditions beyond keeping
+  the notice.
+- You want it inside a product or a service, or you need support: contact
+  **contact@hartwell-labs.pl**.
